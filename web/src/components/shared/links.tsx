@@ -10,48 +10,52 @@ interface SharedLinkProps {
   id?: string;
   children?: React.ReactNode;
   className?: string;
-  dispatch?: any;
 }
 
-export const GitHubLink = ({ dispatch, ...props }: SharedLinkProps) => {
+export const GitHubLink = ({ children, ...props }: SharedLinkProps) => {
   const [locale] = useLocale();
   return (
     <a
+      href={URLS.GITHUB_ROOT}
       target="_blank"
-      href={`${URLS.GITHUB_ROOT}`}
       rel="noopener noreferrer"
       onClick={() => trackGlobal('github', locale)}
-      {...props}
-    />
+      {...props}>
+      {children}
+    </a>
   );
 };
 
-export const DiscourseLink = ({ dispatch, ...props }: SharedLinkProps) => {
+export const DiscourseLink = ({ children, ...props }: SharedLinkProps) => {
   const [locale] = useLocale();
   const discourseURL = useLocalizedDiscourseURL();
   return (
     <a
-      target="blank"
       href={discourseURL}
+      target="_blank"
+      rel="noopener noreferrer"
       onClick={() => trackGlobal('discourse', locale)}
-      {...props}
-    />
+      {...props}>
+      {children}
+    </a>
   );
 };
 
-export const MatrixLink = ({ dispatch, ...props }: SharedLinkProps) => {
+export const MatrixLink = ({ children, ...props }: SharedLinkProps) => {
   const [locale] = useLocale();
   return (
     <a
-      target="blank"
       href="https://chat.mozilla.org/#/room/#common-voice:mozilla.org"
+      target="_blank"
+      rel="noopener noreferrer"
       onClick={() => trackGlobal('matrix', locale)}
-      {...props}
-    />
+      {...props}>
+      {children}
+    </a>
   );
 };
 
-export const ContactLink = ({ dispatch, ...props }: SharedLinkProps) => {
+export const ContactLink = (props: SharedLinkProps) => {
   const [locale] = useLocale();
   const [showContactModal, setShowContactModal] = useState(false);
 

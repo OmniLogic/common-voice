@@ -25,6 +25,7 @@
     --top-z-index: 2;
     --middle-z-index: 1;
     --bottom-z-index: 0;
+    --background-z-index: -1;
 
     --base-font-family: 'Open Sans', sans-serif;
     --strong-font-family: 'Zilla Slab', 'Georgia', 'Utopia', 'Charter', serif;

@@ -1,35 +1,29 @@
 .error-page {
+    position: relative;
     display: flex;
     flex-direction: column;
+    z-index: var(--bottom-z-index);
 
-    #content {
-        min-height: unset;
-
-        &,
-        .error-page-container-outer {
-            padding: 0;
-            max-width: 100%;
-            width: 100%;
-        }
+    /* wave in background */
+    &::before {
+        z-index: var(--background-z-index);
+        position: absolute;
+        height: 80vh;
+        top: 0;
+        left: calc(-1 * var(--page-margin));
+        right: calc(-1 * var(--page-margin));
+        content: '';
+        background: url('../images/wave-footer@3x.png') no-repeat bottom/100%;
     }
 
-    #content,
     .mars {
         display: flex;
         flex-direction: column;
-    }
-
-    #content,
-    .error-page-container-outer {
-        flex-grow: 1;
-    }
-
-    .error-page-container-outer {
-        border-top: 1px solid var(--light-grey);
-        background: url('../images/wave-footer@3x.png') no-repeat bottom/100%;
+        margin-left: auto;
+        max-width: 40%;
 
         @media (--xs-down) {
-            background: none;
+            max-width: 50%;
         }
     }
 
@@ -65,7 +59,7 @@
         }
     }
 
-    h2 {
+    h1 {
         font: var(--font-size-max) / 58px var(--strong-font-family);
 
         @media (--xs-down) {
@@ -94,32 +88,6 @@
         }
     }
 
-    .mars {
-        margin-left: auto;
-        max-width: 40%;
-
-        @media (--xs-down) {
-            max-width: 50%;
-        }
-    }
-
-    .mars-body,
-    .mars-shadow {
-        width: 100%;
-    }
-
-    .mars-body-container {
-        animation: 3600ms ease-in-out infinite alternate error-page-bob;
-    }
-
-    .mars-body {
-        animation: 8471ms ease-in-out infinite alternate error-page-twist;
-    }
-
-    .mars-shadow {
-        animation: 4s ease-in-out infinite alternate error-page-grow;
-    }
-
     .round-button {
         align-items: center;
         background-color: var(--near-black);
@@ -145,32 +113,5 @@
 
     footer {
         margin-top: 0;
-    }
-}
-
-@keyframes error-page-bob {
-    from {
-        transform: translateY(0);
-    }
-    to {
-        transform: translateY(-10px);
-    }
-}
-
-@keyframes error-page-twist {
-    from {
-        transform: rotate(-3deg);
-    }
-    to {
-        transform: rotate(3deg);
-    }
-}
-
-@keyframes error-page-grow {
-    from {
-        transform: scale(1);
-    }
-    to {
-        transform: scale(1.3);
     }
 }
