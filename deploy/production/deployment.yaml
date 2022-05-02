@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: common-voice
+  namespace: innovation
+spec:
+  selector:
+    matchLabels:
+      app: common-voice
+  template:
+    metadata:
+      labels:
+        app: common-voice
+    spec:
+      volumes:
+        - name: config
+          configMap:
+            name: s3proxy-conf
+            defaultMode: 416
+        - name: commonvoice-config
+          configMap:
+            name: commonvoice-conf
+            defaultMode: 416
+      containers:
+        - name: common-voice
+          image: omnilogic.azurecr.io/common-voice:v1
+          command:
+            - bash
+            - '-c'
+            - >-
+              /code/docker/wait-for-it.sh s3proxy:80 --
+              /code/docker/prepare_s3.sh && yarn && yarn start
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: DOTENV_CONFIG_PATH
+              value: /code/.env-local-docker
+          resources:
+            limits:
+              memory: 4000Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          volumeMounts:
+            - name: commonvoice-config
+              readOnly: true
+              mountPath: /code/config.json
+              subPath: config.json
+            - name: commonvoice-config
+              readOnly: true
+              mountPath: /code/.env-local-docker
+              subPath: env-local-docker
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+        - name: s3proxy
+          image: andrewgaul/s3proxy
+          command:
+            - java
+            - '-DLOG_LEVEL=trace'
+            - '-jar'
+            - s3proxy
+            - '--properties'
+            - /etc/s3proxy.conf
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - name: config
+              readOnly: true
+              mountPath: /etc/s3proxy.conf
+              subPath: s3proxy.conf
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+        - name: redis
+          image: redis:alpine
+          ports:
+            - containerPort: 6379
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.azure.com/scalesetpriority
+                    operator: In
+                    values:
+                      - spot
+      schedulerName: default-scheduler
+      tolerations:
+        - key: kubernetes.azure.com/scalesetpriority
+          operator: Equal
+          value: spot
+          effect: NoSchedule
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
