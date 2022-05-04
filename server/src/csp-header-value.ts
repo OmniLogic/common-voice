@@ -19,6 +19,7 @@ const SOURCES = {
   'media-src': [
     'data:',
     'blob:',
+    'https://s3proxy.common-voice.dev.omnilogic.com.br',
     'https://*.amazonaws.com',
     'https://*.amazon.com',
   ],

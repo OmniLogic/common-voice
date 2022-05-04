@@ -77,8 +77,6 @@ export default class Server {
       release: RELEASE_VERSION,
     });
 
-    console.log(CSP_HEADER_VALUE)
-
     const staticOptions = {
       setHeaders: (response: express.Response) => {
         // Basic Information
