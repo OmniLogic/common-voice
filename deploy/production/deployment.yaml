@@ -38,7 +38,7 @@ spec:
         env:
         - name: DOTENV_CONFIG_PATH
           value: /code/.env-local-docker
-        image: omnilogic.azurecr.io/common-voice:v3
+        image: omnilogic.azurecr.io/common-voice:v4
         imagePullPolicy: IfNotPresent
         name: common-voice
         ports:
