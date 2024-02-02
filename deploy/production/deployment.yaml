@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: common-voice
-  namespace: core-conversational-prd
+  namespace: innovation
 spec:
   progressDeadlineSeconds: 600
   revisionHistoryLimit: 10
